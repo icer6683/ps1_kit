@@ -38,13 +38,21 @@ class LogisticRegression():
 
         """
         # Your solution goes here
-        margin = np.empty(len(y))
-        in_log = np.empty(len(y))
-        for i in range(len(y)):
-            f = np.dot(np.reshape(w, (1, w.size)), X[i])
-            margin[i] = np.dot(y[i], f)
-            in_log[i] = 1 + np.exp(-margin[i])
-        return np.mean(np.log(in_log))
+        if not self.lam:
+            margin = np.empty(len(y))
+            in_log = np.empty(len(y))
+            for i in range(len(y)):
+                f = np.dot(np.reshape(w, (1, w.size)), X[i])
+                margin[i] = np.dot(y[i], f)
+                in_log[i] = 1 + np.exp(-margin[i])
+            return np.mean(np.log(in_log))
+        term_one = np.empty(len(y))
+        for j in range(len(y)):
+            term_one[j] = (
+                (np.dot(np.reshape(w, (1, w.size)), X[j])) - y[j])**2
+        for k in range(len(X[0])):
+            term_two = np.sum(self.lam*(w[k]) ** 2)
+        return np.mean(np.sum(term_one)) + term_two
 
     def fit(self, X, y, w0=None):
         """ Learn the weight vector of the logistic regressor via
