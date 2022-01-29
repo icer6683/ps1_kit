@@ -12,7 +12,7 @@ class LogisticRegression():
         """ Construct a least square regression object
         Don't modify this
 
-        Args: 
+        Args:
             lam (float):
                 regularization constant
                 Default = 0 (ordinary logistic regression)
@@ -23,7 +23,7 @@ class LogisticRegression():
     def logistic_loss(self, w, X, y):
         """ Compute the logistic loss
 
-        Args: 
+        Args:
             w (numpy.array)
                 Weight vector
 
@@ -38,16 +38,16 @@ class LogisticRegression():
 
         """
         # Your solution goes here
-        f = np.dot(w.T, X)
         margin = np.empty(len(y))
         in_log = np.empty(len(y))
-        for i in len(y):
+        for i in range(len(y)):
+            f = np.dot(np.reshape(w, (1, w.size)), X[i])
             margin[i] = np.dot(y[i], f)
             in_log[i] = 1 + np.exp(-margin[i])
         return np.mean(np.log(in_log))
 
     def fit(self, X, y, w0=None):
-        """ Learn the weight vector of the logistic regressor via 
+        """ Learn the weight vector of the logistic regressor via
         iterative optimization using scipy.optimize.minimize
 
         Args:
@@ -55,7 +55,7 @@ class LogisticRegression():
                 Input feature matrix with shape (N,d)z
             y (numpy.array)
                 Label vector with shape (N,)
-            w0 (numpy.array) 
+            w0 (numpy.array)
                 (Optional) initial estimate of weight vector
 
         Returns:
@@ -72,15 +72,13 @@ class LogisticRegression():
 
         # You should initialize w0 here
         if not w0:
-            w0 = np.zero(len(X[0])+1)
+            w0 = np.zeros(len(X[0])+1)
 
-        ones = np.ones((len(X), 1))
-        Xnew = np.hstack(X, ones)
         # Hint:
-        res = minimize(self.logistic_loss, w0, args=(Xnew, y))
-        w = res.x[:len(X[0])+1]
+        res = minimize(self.logistic_loss, w0, args=(utils.augment_bias(X), y))
+        w = res.x[:len(X[0])]
         self.weight = w
-        b = w[len(X[0])+1]
+        b = res.x[len(X[0])]
         self.bias = b
         # The rest of your solution goes here
         return (w, b)
@@ -100,5 +98,11 @@ class LogisticRegression():
 
         """
         # Your solution goes here
-        weight = np.hstack(self.weight, self.bias)
-        return np.sign(np.dot(np.transpose(weight), utils.augment_bias(X)) > 0)
+        weight = np.hstack((self.weight, self.bias))
+        yhat = np.empty(len(X))
+        for i in range(len(yhat)):
+            yhat[i] = np.sign(np.dot(np.reshape(
+                weight, (1, weight.size)), np.transpose(utils.augment_bias(X)[i])))
+            if yhat[i] == 0:
+                yhat[i] = 1
+        return yhat
