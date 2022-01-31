@@ -7,7 +7,6 @@ from logistic_regression import LogisticRegression
 X_train, y_train, X_test, y_test = utils.load_all_train_test_data(
     "P4")
 subsets_X, subsets_y = utils.load_learning_curve_data("P4/Train-subsets")
-weight = None
 train_errors = np.empty(len(subsets_X))
 test_errors = np.empty(len(subsets_X))
 
