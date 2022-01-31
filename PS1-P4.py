@@ -4,6 +4,7 @@ import numpy as np
 from logistic_regression import LogisticRegression
 
 # HINT: this is really all the imports you need
+# Part A
 X_train, y_train, X_test, y_test = utils.load_all_train_test_data(
     "P4")
 subsets_X, subsets_y = utils.load_learning_curve_data("P4/Train-subsets")
@@ -23,18 +24,19 @@ for i, X in enumerate(subsets_X):
     print(i)
 
 xaxis = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-plt.plot(xaxis, test_errors)
+plt.plot(xaxis, test_errors, label="Testing")
+plt.plot(xaxis, train_errors, label="Training")
 plt.xlabel("Percent Training Data")
-plt.ylabel("Testing Data Classification Errors")
-plt.savefig("testing_learning_curve.png")
+plt.ylabel("Classification Error")
+plt.title("Unregularized Learning Curve")
+plt.legend()
+plt.savefig("learning_curve4.png")
 plt.show()
 
-plt.plot(xaxis, train_errors)
-plt.xlabel("Percent Training Data")
-plt.ylabel("Training Data Classification Errors")
-plt.savefig("training_learning_curve.png")
-plt.show()
+print("Training error: ", train_errors[9])
+print("Testing error: ", test_errors[9])
 
+# Part B
 regularizer_values = np.array([10**-7, 10**-6, 10**-
                                5, 10**-4, 10**-3, 10**-2, 10**-1, 1])
 
@@ -65,16 +67,13 @@ for j in range(len(regularizer_values)):
     print(j)
 
 xaxis2 = [-7, -6, -5, -4, -3, -2, -1, 1]
-plt.plot(xaxis2, test_errors_reg)
+plt.plot(xaxis2, test_errors_reg, label="Testing")
+plt.plot(xaxis2, train_errors_reg, label="Training")
 plt.xlabel("Log of Lambda")
-plt.ylabel("Testing Data Classification Errors")
-plt.savefig("testing_learning_curve_reg.png")
-plt.show()
-
-plt.plot(xaxis2, train_errors_reg)
-plt.xlabel("Log of Lambda")
-plt.ylabel("Training Data Classification Errors")
-plt.savefig("training_learning_curve_reg.png")
+plt.ylabel("Classification Error")
+plt.title("L2-Regularized Learning Curve")
+plt.legend()
+plt.savefig("learning_curve_reg4.png")
 plt.show()
 
 avg_reg_error = np.empty(len(regularizer_values))
@@ -83,16 +82,7 @@ for i in range(len(avg_reg_error)):
 cross_index = np.argmin(avg_reg_error)
 best_lambda = regularizer_values[cross_index]
 
-print(cross_error)
 print("Set of all cross-validation errors are as follows: ", avg_reg_error)
 print("The optimal lambda is: "+str(best_lambda))
-final = LogisticRegression(best_lambda)
-final.fit(X_train, y_train)
-yfinal_train = final.predict(X_train)
-yfinal_test = final.predict(X_test)
-final_train_error = utils.classification_error(yfinal_train, y_train)
-final_test_error = utils.classification_error(yfinal_test, y_test)
-print("The corresponding training error is: " +
-      str(final_train_error))
-print("The corresponding testing error is: " +
-      str(final_test_error))
+print("The corresponding training error is: ", train_errors_reg[cross_index])
+print("The corresponding testing error is: ", test_errors_reg[cross_index])

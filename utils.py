@@ -38,7 +38,6 @@ load_initial_weights
 """
 
 
-
 def load_data_from_txt_file(file_name, is_label=False):
     """
     Load data from a text file
@@ -136,8 +135,8 @@ def load_all_train_test_data(folder):
     """
     X_train_file = f"{folder}/X_train.txt"
     y_train_file = f"{folder}/y_train.txt"
-    X_test_file  = f"{folder}/X_test.txt"
-    y_test_file  = f"{folder}/y_test.txt"
+    X_test_file = f"{folder}/X_test.txt"
+    y_test_file = f"{folder}/y_test.txt"
     X_train = load_data_from_txt_file(X_train_file)
     y_train = load_data_from_txt_file(y_train_file, True)
     X_test = load_data_from_txt_file(X_test_file)
@@ -148,7 +147,7 @@ def load_all_train_test_data(folder):
 def load_learning_curve_data(learning_curve_data_folder):
     """
     Load all learning curve data
-    
+
     Args:
         learning_curve_data_folder (str):
             Directory to the folder containing the data. This
@@ -169,18 +168,18 @@ def load_learning_curve_data(learning_curve_data_folder):
         >>> for i, X in enumerate(subsets_X):
         >>>     y = subsets_y[i]
         >>>     # Train on X and y
-    """    
+    """
     all_X_train = []
     all_y_train = []
-    
-    for percent in range(10, 101, 10): # For percent from 10, 20, ..., 100
+
+    for percent in range(10, 101, 10):  # For percent from 10, 20, ..., 100
         X_file = f"{learning_curve_data_folder}/X_train_{percent}%.txt"
         y_file = f"{learning_curve_data_folder}/y_train_{percent}%.txt"
         X = load_data_from_txt_file(X_file)
         y = load_data_from_txt_file(y_file, True)
         all_X_train.append(X)
         all_y_train.append(y)
-    
+
     return (all_X_train, all_y_train)
 
 
@@ -213,12 +212,12 @@ def load_all_cross_validation_data(validation_data_folder):
     """
     all_folds = []
 
-    for fold in [1,2,3,4,5]:
+    for fold in [1, 2, 3, 4, 5]:
         X_file = f"{validation_data_folder}/Fold{fold}/X.txt"
         y_file = f"{validation_data_folder}/Fold{fold}/y.txt"
         X = load_data_from_txt_file(X_file)
         y = load_data_from_txt_file(y_file, True)
-        all_folds.append((X,y))
+        all_folds.append((X, y))
     return all_folds
 
 
@@ -231,7 +230,7 @@ def partition_cross_validation_fold(all_folds, fold):
         all_folds (list):
             list of data folds. Assuming this is returned by
             `load_all_cross_validation_data`
-        
+
         fold (int):
             The index of the fold to be treated as leave out data
 
@@ -240,14 +239,14 @@ def partition_cross_validation_fold(all_folds, fold):
             leave_out_data is a tuple of two elements (X_lo, y_lo)
                 X_lo is a numpy array of size (N,d)
                 y_lo is a numpy array of size (N,)
-            
+
             training_data is a tuple of two elements (X_tr, y_tr)
                 X_tr is a numpy array of size (M,d)
                 y_tr is a numpy array of size (M,d)
 
                 where M is approximately 4x N (assuming we're doing 5 fold
                 cross validation)
-    
+
     Example usage:
         >>> all_folds = load_all_cross_validation_data("/path/to/folder/with/CV-data")
         >>> fold_number = 2 # Pick fold number 3 as leave out fold
@@ -255,12 +254,13 @@ def partition_cross_validation_fold(all_folds, fold):
 
     """
     leave_out_data = all_folds[fold]
-    training_data  = [all_folds[num] for num in range(len(all_folds)) if num != fold]
-    
+    training_data = [all_folds[num]
+                     for num in range(len(all_folds)) if num != fold]
+
     # Concatenate all the remaining data
-    all_x  = np.concatenate([portion[0] for portion in training_data])
-    all_y  = np.concatenate([portion[1] for portion in training_data])
-    
+    all_x = np.concatenate([portion[0] for portion in training_data])
+    all_y = np.concatenate([portion[1] for portion in training_data])
+
     training_data = (all_x, all_y)
     return leave_out_data, training_data
 
@@ -277,7 +277,8 @@ def augment_bias(X):
         X_augment (numpy.array)
             X_augment has size (N, d+1)
     """
-    return np.concatenate((X, np.ones((X.shape[0],1))), axis=1)
+    return np.concatenate((X, np.ones((X.shape[0], 1))), axis=1)
+
 
 def load_initial_weights(folder):
     """
@@ -286,7 +287,7 @@ def load_initial_weights(folder):
     Arg:
         folder (str): Path to folder containing the initial
             weights value
-    
+
     Returns:
         A dictionary whose (field_name, value) pairs correspond
             to parameter name and initial value
@@ -295,16 +296,40 @@ def load_initial_weights(folder):
         >>> init = utils.load_initial_weights("path/to/folder/with/initial/weights")
         >>> net  = NeuralNetworkClassification(input_dim, num_hidden=5,
         >>>         activation="sigmoid", **init)
-    
+
     """
     b1_file = os.path.join(folder, "b1.txt")
     b2_file = os.path.join(folder, "b2.txt")
     W1_file = os.path.join(folder, "W1.txt")
     W2_file = os.path.join(folder, "W2.txt")
-    
+
     b1 = load_data_from_txt_file(b1_file, True)
-    b2 = load_data_from_txt_file(b2_file, True)[0] # A scalar
+    b2 = load_data_from_txt_file(b2_file, True)[0]  # A scalar
     W1 = load_data_from_txt_file(W1_file)
     W2 = load_data_from_txt_file(W2_file)
-        
-    return {"b1":b1, "b2":b2, "W1":W1, "W2":W2}
+
+    return {"b1": b1, "b2": b2, "W1": W1, "W2": W2}
+
+
+def load_all_cross_validation_data10(validation_data_folder):
+    all_folds = []
+
+    for fold in [1, 2, 3, 4, 5]:
+        X_file = f"{validation_data_folder}/Fold{fold}/X_10%.txt"
+        y_file = f"{validation_data_folder}/Fold{fold}/y_10%.txt"
+        X = load_data_from_txt_file(X_file)
+        y = load_data_from_txt_file(y_file, True)
+        all_folds.append((X, y))
+    return all_folds
+
+
+def load_all_cross_validation_data100(validation_data_folder):
+    all_folds = []
+
+    for fold in [1, 2, 3, 4, 5]:
+        X_file = f"{validation_data_folder}/Fold{fold}/X_100%.txt"
+        y_file = f"{validation_data_folder}/Fold{fold}/y_100%.txt"
+        X = load_data_from_txt_file(X_file)
+        y = load_data_from_txt_file(y_file, True)
+        all_folds.append((X, y))
+    return all_folds

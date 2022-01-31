@@ -43,7 +43,8 @@ class LeastSquareRegression():
 
         # Your solution goes here
         X = utils.augment_bias(X)
-        in_inv = np.dot(np.transpose(X), X)
+        in_inv = np.dot(np.transpose(X), X)+self.lam * \
+            len(y)*np.identity(len(X[0]))
         wb = np.dot(np.dot(np.linalg.inv(in_inv), np.transpose(X)), y)
         w = wb[:(len(X[0])-1)]
         self.weight = w
