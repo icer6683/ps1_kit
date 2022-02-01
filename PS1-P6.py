@@ -126,7 +126,6 @@ for j in range(6):
         ytrain10_cross = train2_reg.predict(test_cross10[0])
         cross_error10[j][k] = utils.mean_squared_error(
             ytrain10_cross, test_cross10[1])
-
         train2_reg.fit(train_cross100[0], train_cross100[1])
         ytrain100_cross = train2_reg.predict(test_cross100[0])
         cross_error100[j][k] = utils.mean_squared_error(
@@ -142,25 +141,25 @@ best_lambda10 = regularizer_values[cross_index10]
 cross_index100 = np.argmin(avg_reg_error100)
 best_lambda100 = regularizer_values[cross_index100]
 
-train_final = LeastSquareRegression(regularizer_values[cross_index10])
-train_final.fit(train_cross10[0], train_cross10[1])
+train_final = LeastSquareRegression(best_lambda10)
+train_final.fit(subset_X10, subset_y10)
 print("10%: Set of all cross-validation errors are as follows: ", avg_reg_error10)
 print("10%: The optimal lambda is: "+str(best_lambda10))
 print("10%: The corresponding training error is: ",
-      train_errors2_reg10[cross_index10])
+      utils.mean_squared_error(train_final.predict(subset_X10), subset_y10))
 print("10%: The corresponding testing error is: ",
-      test_errors2_reg10[cross_index10])
+      utils.mean_squared_error(train_final.predict(X_test2), y_test2))
 print("10%: Weight vector: ", train_final.weight)
 print("10%: Bias term: ", train_final.bias)
 
-train_final = LeastSquareRegression(regularizer_values[cross_index100])
-train_final.fit(train_cross100[0], train_cross100[1])
+train_final = LeastSquareRegression(best_lambda100)
+train_final.fit(subset_X100, subset_y100)
 print("100%: Set of all cross-validation errors are as follows: ", avg_reg_error100)
 print("100%: The optimal lambda is: "+str(best_lambda100))
 print("100%: The corresponding training error is: ",
-      train_errors2_reg100[cross_index100])
+      utils.mean_squared_error(train_final.predict(subset_X100), subset_y100))
 print("100%: The corresponding testing error is: ",
-      test_errors2_reg100[cross_index100])
+      utils.mean_squared_error(train_final.predict(X_test2), y_test2))
 print("100%: Weight vector: ", train_final.weight)
 print("100%: Bias term: ", train_final.bias)
 

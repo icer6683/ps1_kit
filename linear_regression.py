@@ -43,12 +43,15 @@ class LeastSquareRegression():
 
         # Your solution goes here
         X = utils.augment_bias(X)
+        identity = np.identity(d)
+        identity = np.concatenate((identity, np.zeros((1, d))))
+        identity = np.concatenate((identity, np.zeros((d+1, 1))), axis=1)
         in_inv = np.dot(np.transpose(X), X)+self.lam * \
-            len(y)*np.identity(len(X[0]))
+            len(y)*identity
         wb = np.dot(np.dot(np.linalg.inv(in_inv), np.transpose(X)), y)
-        w = wb[:(len(X[0])-1)]
+        w = wb[:-1]
         self.weight = w
-        b = wb[len(X[0])-1]
+        b = wb[-1]
         self.bias = b
         return (w, b)
 
