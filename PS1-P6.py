@@ -29,6 +29,7 @@ plt.plot(xaxis, test_errors, label="Testing")
 plt.plot(xaxis, train_errors, label="Training")
 plt.xlabel("Percent Training Data")
 plt.ylabel("Mean Squared Error")
+plt.title("Unregularized Learning Curve")
 plt.legend()
 plt.savefig("learning_curve6.png")
 plt.show()
@@ -39,10 +40,12 @@ print("Bias: ", train.bias)
 print("Training error: ", train_errors[9])
 print("Testing error: ", test_errors[9])
 
-plt.plot(X_test, ytest)
-plt.scatter(X_test, y_test)
-plt.xlabel("Test Instance")
+plt.plot(X_test, ytest, color="orange", label="Predicted")
+plt.scatter(X_test, y_test, label="Actual")
+plt.xlabel("Test Instances")
 plt.ylabel("Test Labels")
+plt.title("Learned Linear Function")
+plt.legend()
 plt.savefig("learned_linear_function.png")
 plt.show()
 
@@ -139,19 +142,27 @@ best_lambda10 = regularizer_values[cross_index10]
 cross_index100 = np.argmin(avg_reg_error100)
 best_lambda100 = regularizer_values[cross_index100]
 
+train_final = LeastSquareRegression(regularizer_values[cross_index10])
+train_final.fit(train_cross10[0], train_cross10[1])
 print("10%: Set of all cross-validation errors are as follows: ", avg_reg_error10)
 print("10%: The optimal lambda is: "+str(best_lambda10))
 print("10%: The corresponding training error is: ",
       train_errors2_reg10[cross_index10])
 print("10%: The corresponding testing error is: ",
       test_errors2_reg10[cross_index10])
+print("10%: Weight vector: ", train_final.weight)
+print("10%: Bias term: ", train_final.bias)
 
+train_final = LeastSquareRegression(regularizer_values[cross_index100])
+train_final.fit(train_cross100[0], train_cross100[1])
 print("100%: Set of all cross-validation errors are as follows: ", avg_reg_error100)
 print("100%: The optimal lambda is: "+str(best_lambda100))
 print("100%: The corresponding training error is: ",
       train_errors2_reg100[cross_index100])
 print("100%: The corresponding testing error is: ",
       test_errors2_reg100[cross_index100])
+print("100%: Weight vector: ", train_final.weight)
+print("100%: Bias term: ", train_final.bias)
 
 plt.plot(regularizer_values, avg_reg_error10, label="Cross")
 plt.plot(regularizer_values, test_errors2_reg10, label="Testing")
