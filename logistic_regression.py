@@ -45,7 +45,7 @@ class LogisticRegression():
             f = np.dot(w, X[i])
             margin[i] = np.dot(y[i], f)
             in_log[i] = 1 + np.exp(-margin[i])
-        for j in range(len(X[0])):
+        for j in range(len(X[0]-1)):
             regularizer += w[j]**2
         return np.mean(np.log2(in_log)) + self.lam*regularizer
 
