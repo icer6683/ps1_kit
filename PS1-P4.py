@@ -67,7 +67,7 @@ for j in range(len(regularizer_values)):
         print(k)
     print(j)
 
-xaxis2 = [-7, -6, -5, -4, -3, -2, -1, 1]
+xaxis2 = [-7, -6, -5, -4, -3, -2, -1, 0]
 plt.plot(xaxis2, test_errors_reg, label="Testing")
 plt.plot(xaxis2, train_errors_reg, label="Training")
 plt.xlabel("Log of Lambda")
